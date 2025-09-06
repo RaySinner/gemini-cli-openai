@@ -776,3 +776,57 @@ Any other form of distribution, sublicensing, or commercial use is strictly proh
 
 
 [![Star History Chart](https://api.star-history.com/svg?repos=GewoonJaap/gemini-cli-openai&type=Date)](https://www.star-history.com/#GewoonJaap/gemini-cli-openai&Date)
+
+
+## Docker Run with Environment Variables (PowerShell)
+
+When running the Docker container in PowerShell, you need to pass environment variables correctly. Here is an example command that sets up all the necessary environment variables for the container to run:
+
+```powershell
+docker run -p 8787:8787 `
+  -e GCP_PROJECT_ID="your-gcp-project-id" `
+  -e GCP_ACCESS_TOKEN="your-gcp-access-token" `
+  -e GCP_REFRESH_TOKEN="your-gcp-refresh-token" `
+  -e OPENAI_API_KEY="sk-your-secret-api-key" `
+  -e ENABLE_FAKE_THINKING="true" `
+  -e ENABLE_REAL_THINKING="true" `
+  -e STREAM_THINKING_AS_CONTENT="true" `
+  -e ENABLE_AUTO_MODEL_SWITCHING="true" `
+  -e ENABLE_GEMINI_NATIVE_TOOLS="true" `
+  -e ENABLE_GOOGLE_SEARCH="true" `
+  -e ENABLE_URL_CONTEXT="true" `
+  -e GEMINI_TOOLS_PRIORITY="native_first" `
+  -e ALLOW_REQUEST_TOOL_CONTROL="true" `
+  -e ENABLE_INLINE_CITATIONS="true" `
+  -e INCLUDE_GROUNDING_METADATA="false" `
+  -e GEMINI_MODERATION_HARASSMENT_THRESHOLD="BLOCK_NONE" `
+  -e GEMINI_MODERATION_HATE_SPEECH_THRESHOLD="BLOCK_NONE" `
+  -e GEMINI_MODERATION_SEXUALLY_EXPLICIT_THRESHOLD="BLOCK_SOME" `
+  -e GEMINI_MODERATION_DANGEROUS_CONTENT_THRESHOLD="BLOCK_ONLY_HIGH" `
+  your-docker-image-name
+```
+
+Replace `"your-..."` placeholders with your actual credentials and configuration. This command maps the container's port `8787` to the host's port `8787` and injects all the required settings as environment variables.
+
+docker run -d `
+-p 8787:8787 `
+--name gemini-worker-instance-1 `
+-e "GCP_ACCESS_TOKEN=..." `
+-e "GCP_REFRESH_TOKEN=..." `
+-e "GCP_SCOPE=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile openid https://www.googleapis.com/auth/cloud-platform" `
+-e "GCP_TOKEN_TYPE=Bearer" `
+-e "GCP_ID_TOKEN=..." `
+-e "GCP_EXPIRY_DATE=1757171410556" `
+-e "OPENAI_API_KEY=sk-your-secret-api-key-here" `
+-e "ENABLE_FAKE_THINKING=false" `
+-e "ENABLE_REAL_THINKING=true" `
+-e "STREAM_THINKING_AS_CONTENT=true" `
+-e "ENABLE_AUTO_MODEL_SWITCHING=false" `
+-e "ENABLE_GEMINI_NATIVE_TOOLS=true" `
+-e "GEMINI_TOOLS_PRIORITY=native_first" `
+-e "DEFAULT_TO_NATIVE_TOOLS=true" `
+-e "ALLOW_REQUEST_TOOL_CONTROL=true" `
+-e "ENABLE_INLINE_CITATIONS=true" `
+-e "INCLUDE_GROUNDING_METADATA=true" `
+gemini-cli-openai_gemini-worker
+

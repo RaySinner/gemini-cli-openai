@@ -10,7 +10,13 @@ export type SafetyThreshold =
 
 // --- Environment Variable Typings ---
 export interface Env {
-	GCP_SERVICE_ACCOUNT: string; // Now contains OAuth2 credentials JSON
+	GCP_SERVICE_ACCOUNT?: string; // Now contains OAuth2 credentials JSON
+	GCP_ACCESS_TOKEN?: string;
+	GCP_REFRESH_TOKEN?: string;
+	GCP_SCOPE?: string;
+	GCP_TOKEN_TYPE?: string;
+	GCP_ID_TOKEN?: string;
+	GCP_EXPIRY_DATE?: string;
 	GEMINI_PROJECT_ID?: string;
 	GEMINI_CLI_KV: KVNamespace; // Cloudflare KV for token caching
 	OPENAI_API_KEY?: string; // Optional API key for authentication

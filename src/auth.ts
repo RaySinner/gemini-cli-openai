@@ -47,10 +47,6 @@ export class AuthManager {
 	 * Initializes authentication using OAuth2 credentials with KV storage caching.
 	 */
 	public async initializeAuth(): Promise<void> {
-		if (!this.env.GCP_SERVICE_ACCOUNT) {
-			throw new Error("`GCP_SERVICE_ACCOUNT` environment variable not set. Please provide OAuth2 credentials JSON.");
-		}
-
 		try {
 			// First, try to get a cached token from KV storage
 			let cachedTokenData = null;
@@ -76,8 +72,8 @@ export class AuthManager {
 				console.log("Cached token expired or expiring soon");
 			}
 
-			// Parse original credentials from environment
-			const oauth2Creds: OAuth2Credentials = JSON.parse(this.env.GCP_SERVICE_ACCOUNT);
+			// Get credentials using the new method
+			const oauth2Creds = this.getOAuth2Credentials();
 
 			// Check if the original token is still valid
 			const timeUntilExpiry = oauth2Creds.expiry_date - Date.now();
@@ -240,5 +236,41 @@ export class AuthManager {
 	 */
 	public getAccessToken(): string | null {
 		return this.accessToken;
+	}
+
+	/**
+	 * Retrieves OAuth2 credentials from environment variables.
+	 * It first checks for individual GCP_* variables, then falls back to the GCP_SERVICE_ACCOUNT JSON string.
+	 * @returns {OAuth2Credentials} The parsed OAuth2 credentials.
+	 * @throws {Error} If no credentials are found.
+	 */
+	private getOAuth2Credentials(): OAuth2Credentials {
+		// Try to get credentials from individual environment variables first
+		if (this.env.GCP_REFRESH_TOKEN) {
+			console.log("Using individual GCP_* environment variables for OAuth2 credentials.");
+			return {
+				access_token: this.env.GCP_ACCESS_TOKEN || "",
+				refresh_token: this.env.GCP_REFRESH_TOKEN,
+				scope: this.env.GCP_SCOPE || "",
+				token_type: this.env.GCP_TOKEN_TYPE || "Bearer",
+				id_token: this.env.GCP_ID_TOKEN || "",
+				expiry_date: parseInt(this.env.GCP_EXPIRY_DATE || "0", 10)
+			};
+		}
+
+		// Fallback to the single GCP_SERVICE_ACCOUNT variable
+		if (this.env.GCP_SERVICE_ACCOUNT) {
+			console.log("Using GCP_SERVICE_ACCOUNT environment variable for OAuth2 credentials.");
+			try {
+				return JSON.parse(this.env.GCP_SERVICE_ACCOUNT);
+			} catch {
+				throw new Error("Failed to parse GCP_SERVICE_ACCOUNT JSON string. Please ensure it is valid JSON.");
+			}
+		}
+
+		// If no credentials are found, throw an error
+		throw new Error(
+			"OAuth2 credentials not found. Please provide them via individual GCP_* environment variables or as a single GCP_SERVICE_ACCOUNT JSON string."
+		);
 	}
 }
