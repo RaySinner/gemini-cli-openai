@@ -55,4 +55,21 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 # --port 8787 matches the EXPOSE and wrangler.toml [dev] port
 # --local disables proxying to Cloudflare's network, keeping everything local
 # --persist-to tells miniflare to use the specified path for local storage
-CMD ["wrangler", "dev", "--host", "0.0.0.0", "--port", "8787", "--local", "--persist-to", ".mf"]
+CMD ["sh", "-c", "wrangler dev --host 0.0.0.0 --port 8787 --local --persist-to .mf \
+    --var GCP_ACCESS_TOKEN:$GCP_ACCESS_TOKEN \
+    --var GCP_REFRESH_TOKEN:$GCP_REFRESH_TOKEN \
+    --var GCP_SCOPE:$GCP_SCOPE \
+    --var GCP_TOKEN_TYPE:$GCP_TOKEN_TYPE \
+    --var GCP_ID_TOKEN:$GCP_ID_TOKEN \
+    --var GCP_EXPIRY_DATE:$GCP_EXPIRY_DATE \
+    --var OPENAI_API_KEY:$OPENAI_API_KEY \
+    --var ENABLE_FAKE_THINKING:$ENABLE_FAKE_THINKING \
+    --var ENABLE_REAL_THINKING:$ENABLE_REAL_THINKING \
+    --var STREAM_THINKING_AS_CONTENT:$STREAM_THINKING_AS_CONTENT \
+    --var ENABLE_AUTO_MODEL_SWITCHING:$ENABLE_AUTO_MODEL_SWITCHING \
+    --var ENABLE_GEMINI_NATIVE_TOOLS:$ENABLE_GEMINI_NATIVE_TOOLS \
+    --var GEMINI_TOOLS_PRIORITY:$GEMINI_TOOLS_PRIORITY \
+    --var DEFAULT_TO_NATIVE_TOOLS:$DEFAULT_TO_NATIVE_TOOLS \
+    --var ALLOW_REQUEST_TOOL_CONTROL:$ALLOW_REQUEST_TOOL_CONTROL \
+    --var ENABLE_INLINE_CITATIONS:$ENABLE_INLINE_CITATIONS \
+    --var INCLUDE_GROUNDING_METADATA:$INCLUDE_GROUNDING_METADATA"]

@@ -142,8 +142,13 @@ OpenAIRoute.post("/chat/completions", async (c) => {
 		});
 
 		// Initialize services
-		const authManager = new AuthManager(c.env);
-		const geminiClient = new GeminiApiClient(c.env, authManager);
+		// Combine c.env and process.env for Docker compatibility
+		const combinedEnv = {
+			...(typeof process !== "undefined" ? process.env : {}),
+			...c.env
+		};
+		const authManager = new AuthManager(combinedEnv as Env);
+		const geminiClient = new GeminiApiClient(combinedEnv as Env, authManager);
 
 		// Test authentication first
 		try {
