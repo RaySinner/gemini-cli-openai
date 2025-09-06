@@ -136,3 +136,11 @@ dist
 .pnp.*
 .dev.vars
 .wrangler/
+
+
+# Visual Studio
+.vs/
+bin/
+obj/
+*.user
+*.suo
